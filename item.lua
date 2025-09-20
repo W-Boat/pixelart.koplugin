@@ -100,7 +100,7 @@ function Item:paintTo(bb, x, y)
     end
 
     if self.icon or self.size then -- lower contrast for more modern design
-        bb:paintRect(x, y, self.dimen.w, self.dimen.h, Blitbuffer.Color8(0x00, 0.2))
+        bb:paintRect(x, y, self.dimen.w, self.dimen.h, Blitbuffer.Color8(0x33))
     end
 
     if self[1].background ~= Blitbuffer.COLOR_WHITE then -- make bg have rounded edges
