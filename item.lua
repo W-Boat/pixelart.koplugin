@@ -7,6 +7,7 @@ local Geom = require("ui/geometry")
 local GestureRange = require("ui/gesturerange")
 local ImageWidget = require("ui/widget/imagewidget")
 local InputContainer = require("ui/widget/container/inputcontainer")
+local PluginPath = require("_path")
 local Screen = Device.screen
 local TextWidget = require("ui/widget/textwidget")
 local UIManager = require("ui/uimanager")
@@ -41,8 +42,9 @@ function Item:init()
     }
 
     if self.icon then
+        local icon_name = type(self.icon) == "function" and self.icon(self.show_parent) or self.icon
         self.content = ImageWidget:new{
-            file = "plugins/pixelart.koplugin/icons/" .. (type(self.icon) == "function" and self.icon(self.show_parent) or self.icon) .. ".png",
+            file = PluginPath .. "/icons/" .. icon_name .. ".png",
             width = 72,
             height = 72,
             alpha = true,
@@ -81,15 +83,17 @@ function Item:paintTo(bb, x, y)
         if self.dark then self[1].background = self[1].background:invert() end
     end
 
-    if type(self.icon) == "function" and ("plugins/pixelart.koplugin/icons/" .. self.icon(self.show_parent) .. ".png") ~= self.content.file then -- icon needs updating
-        self.content:free()
-        self.content = ImageWidget:new{
-            file = "plugins/pixelart.koplugin/icons/" .. self.icon(self.show_parent) .. ".png",
-            width = 72,
-            height = 72,
-            alpha = true,
-            show_parent = self.show_parent,
-        }
+    if type(self.icon) == "function" then
+        local icon_path = PluginPath .. "/icons/" .. self.icon(self.show_parent) .. ".png"
+        if icon_path ~= self.content.file then -- icon needs updating
+            self.content:free()
+            self.content = ImageWidget:new{
+                file = icon_path,
+                width = 72,
+                height = 72,
+                alpha = true,
+                show_parent = self.show_parent,
+            }
         self[1][1][1] = self.content
     end
 
